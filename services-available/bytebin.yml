@@ -30,7 +30,6 @@ services:
     labels:
       - joyride.host.name=${BYTEBIN_HOST_NAME:-bytebin}.${HOST_DOMAIN}
       - traefik.enable=${BYTEBIN_TRAEFIK_ENABLED:-true}
-      - traefik.docker.network=traefik
       - traefik.http.routers.bytebin.entrypoints=websecure
       - traefik.http.routers.bytebin.rule=Host(`${BYTEBIN_HOST_NAME:-bytebin}.${HOST_DOMAIN}`)
       - traefik.http.routers.bytebin.tls=true
@@ -61,7 +60,6 @@ services:
     labels:
       - joyride.host.name=${BYTEBIN_HOST_NAME:-bytebin}.${HOST_DOMAIN}
       - traefik.enable=${BYTESOCKS_TRAEFIK_ENABLED:-true}
-      - traefik.docker.network=traefik
       - traefik.http.routers.bytesocks.entrypoints=websecure
       - traefik.http.routers.bytesocks.priority=100
       - traefik.http.routers.bytesocks.rule=Host(`${BYTEBIN_HOST_NAME:-bytebin}.${HOST_DOMAIN}`) && PathPrefix(`/ws/`)
