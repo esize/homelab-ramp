@@ -9,9 +9,12 @@ networks:
 services:
   bytebin:
     image: ghcr.io/lucko/bytebin:${BYTEBIN_DOCKER_TAG:-latest}
+    env_file:
+      - ./services-enabled/bytebin.env
     container_name: ${BYTEBIN_CONTAINER_NAME:-bytebin}
     restart: ${BYTEBIN_RESTART:-unless-stopped}
     mem_limit: ${BYTEBIN_MEM_LIMIT:-200g}
+    user: "${PUID:-1000}:${PGID:-1000}"
     networks:
       - traefik
     volumes:
@@ -42,9 +45,12 @@ services:
       - autoheal=${BYTEBIN_AUTOHEAL_ENABLED:-true}
   bytesocks:
     image: ghcr.io/lucko/bytesocks:${BYTEBIN_DOCKER_TAG:-latest}
+    env_file:
+      - ./services-enabled/bytebin.env
     container_name: ${BYTESOCKS_CONTAINER_NAME:-bytesocks}
     restart: ${BYTESOCKS_RESTART:-unless-stopped}
     mem_limit: ${BYTESOCKS_MEM_LIMIT:-200g}
+    user: "${PUID:-1000}:${PGID:-1000}"
     networks:
       - traefik
     volumes:

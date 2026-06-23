@@ -1,0 +1,25 @@
+---
+# Bytebin stores content and its SQLite index in bind-mounted directories.
+# Ensure they exist and are writable by the configured container user.
+
+version: "1"
+
+operations:
+  - type: mkdir
+    path: data
+    mode: "0775"
+
+  - type: mkdir
+    path: db
+    mode: "0775"
+
+  - type: chown
+    path: ./
+    user: "${PUID}"
+    group: "${PGID}"
+    recursive: true
+
+  - type: chmod
+    path: ./
+    mode: "g+rwX"
+    recursive: true
