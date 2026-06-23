@@ -25,10 +25,19 @@ services:
     labels:
       - joyride.host.name=${BYTEBIN_HOST_NAME:-bytebin}.${HOST_DOMAIN}
       - traefik.enable=${BYTEBIN_TRAEFIK_ENABLED:-true}
-      - traefik.http.routers.bytebin.entrypoints=websecure
-      - traefik.http.routers.bytebin.rule=Host(`${BYTEBIN_HOST_NAME:-bytebin}.${HOST_DOMAIN}`)
-      - traefik.http.services.bytebin.loadbalancer.server.scheme=https # enable if the service wants to connect over https
-      - traefik.http.services.bytebin.loadbalancer.server.port=3000
+      - traefik.http.routers.bytebin-data-disabled.entrypoints=websecure
+      - traefik.http.routers.bytebin-data-disabled.priority=200
+      - traefik.http.routers.bytebin-data-disabled.rule=Host(`${BYTEBIN_HOST_NAME:-bytebin}.${HOST_DOMAIN}`) && Path(`/data/`)
+      - traefik.http.routers.bytebin-data-disabled.service=noop@internal
+      - traefik.http.routers.bytebin-data.entrypoints=websecure
+      - traefik.http.routers.bytebin-data.priority=100
+      - traefik.http.routers.bytebin-data.rule=Host(`${BYTEBIN_HOST_NAME:-bytebin}.${HOST_DOMAIN}`) && PathPrefix(`/data/`)
+      - traefik.http.routers.bytebin-data.middlewares=bytebin-data-stripprefix
+      - traefik.http.routers.bytebin-data.service=bytebin
+      - traefik.http.middlewares.bytebin-data-stripprefix.stripprefix.prefixes=/data
+      - traefik.http.services.bytebin.loadbalancer.passhostheader=true
+      - traefik.http.services.bytebin.loadbalancer.server.scheme=http
+      - traefik.http.services.bytebin.loadbalancer.server.port=8080
       - com.centurylinklabs.watchtower.enable=${BYTEBIN_WATCHTOWER_ENABLED:-true}
       - autoheal=${BYTEBIN_AUTOHEAL_ENABLED:-true}
   bytesocks:
@@ -45,11 +54,15 @@ services:
       - PGID=${PGID:-1000}
       - TZ=${TZ}
     labels:
-      - joyride.host.name=${BYTESOCKS_HOST_NAME:-bytesocks}.${HOST_DOMAIN}
+      - joyride.host.name=${BYTEBIN_HOST_NAME:-bytebin}.${HOST_DOMAIN}
       - traefik.enable=${BYTESOCKS_TRAEFIK_ENABLED:-true}
       - traefik.http.routers.bytesocks.entrypoints=websecure
-      - traefik.http.routers.bytesocks.rule=Host(`${BYTESOCKS_HOST_NAME:-bytesocks}.${HOST_DOMAIN}`)
-      - traefik.http.services.bytesocks.loadbalancer.server.scheme=https # enable if the service wants to connect over https
+      - traefik.http.routers.bytesocks.rule=Host(`${BYTEBIN_HOST_NAME:-bytebin}.${HOST_DOMAIN}`) && PathPrefix(`/ws/`)
+      - traefik.http.routers.bytesocks.middlewares=bytesocks-stripprefix
+      - traefik.http.routers.bytesocks.service=bytesocks
+      - traefik.http.middlewares.bytesocks-stripprefix.stripprefix.prefixes=/ws
+      - traefik.http.services.bytesocks.loadbalancer.passhostheader=true
+      - traefik.http.services.bytesocks.loadbalancer.server.scheme=http
       - traefik.http.services.bytesocks.loadbalancer.server.port=8080
       - com.centurylinklabs.watchtower.enable=${BYTESOCKS_WATCHTOWER_ENABLED:-true}
       - autoheal=${BYTESOCKS_AUTOHEAL_ENABLED:-true}
