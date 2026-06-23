@@ -13,6 +13,22 @@ operations:
     path: db
     mode: "0775"
 
+  - type: mkdir
+    path: bytebin-logs
+    mode: "0775"
+
+  - type: mkdir
+    path: bytebin-tmp
+    mode: "0775"
+
+  - type: mkdir
+    path: bytesocks-logs
+    mode: "0775"
+
+  - type: mkdir
+    path: bytesocks-tmp
+    mode: "0775"
+
   - type: chown
     path: ./
     user: "${PUID}"

@@ -20,6 +20,8 @@ services:
     volumes:
       - ./etc/bytebin/data:/opt/bytebin/content
       - ./etc/bytebin/db:/opt/bytebin/db
+      - ./etc/bytebin/bytebin-logs:/opt/bytebin/logs
+      - ./etc/bytebin/bytebin-tmp:/opt/bytebin/tmp
       - /etc/localtime:/etc/localtime:ro
     environment:
       - PUID=${PUID:-1000}
@@ -54,6 +56,8 @@ services:
     networks:
       - traefik
     volumes:
+      - ./etc/bytebin/bytesocks-logs:/opt/bytesocks/logs
+      - ./etc/bytebin/bytesocks-tmp:/opt/bytesocks/tmp
       - /etc/localtime:/etc/localtime:ro
     environment:
       - PUID=${PUID:-1000}
